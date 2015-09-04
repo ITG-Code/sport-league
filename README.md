@@ -1,2 +1,2 @@
 # sport-league
-a webapplication for sport leagues
+A webapplication for sport leagues.
