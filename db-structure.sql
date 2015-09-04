@@ -16,7 +16,7 @@ SET default_tablespace = '';
 SET default_with_oids = false;
 
 --
--- Name: arena; Type: TABLE; Schema: public; Owner: brolaugh; Tablespace: 
+-- Name: arena; Type: TABLE; Schema: public; Owner: brolaugh; Tablespace:
 --
 
 CREATE TABLE arena (
@@ -54,7 +54,7 @@ ALTER SEQUENCE arena_id_seq OWNED BY arena.id;
 
 
 --
--- Name: audience; Type: TABLE; Schema: public; Owner: brolaugh; Tablespace: 
+-- Name: audience; Type: TABLE; Schema: public; Owner: brolaugh; Tablespace:
 --
 
 CREATE TABLE audience (
@@ -88,7 +88,7 @@ ALTER SEQUENCE audience_id_seq OWNED BY audience.id;
 
 
 --
--- Name: event_types; Type: TABLE; Schema: public; Owner: brolaugh; Tablespace: 
+-- Name: event_types; Type: TABLE; Schema: public; Owner: brolaugh; Tablespace:
 --
 
 CREATE TABLE event_types (
@@ -121,7 +121,7 @@ ALTER SEQUENCE event_types_id_seq OWNED BY event_types.id;
 
 
 --
--- Name: events; Type: TABLE; Schema: public; Owner: brolaugh; Tablespace: 
+-- Name: events; Type: TABLE; Schema: public; Owner: brolaugh; Tablespace:
 --
 
 CREATE TABLE events (
@@ -155,7 +155,7 @@ ALTER SEQUENCE events_id_seq OWNED BY events.id;
 
 
 --
--- Name: game; Type: TABLE; Schema: public; Owner: brolaugh; Tablespace: 
+-- Name: game; Type: TABLE; Schema: public; Owner: brolaugh; Tablespace:
 --
 
 CREATE TABLE game (
@@ -193,7 +193,7 @@ ALTER SEQUENCE game_id_seq OWNED BY game.id;
 
 
 --
--- Name: game_person_link; Type: TABLE; Schema: public; Owner: brolaugh; Tablespace: 
+-- Name: game_person_link; Type: TABLE; Schema: public; Owner: brolaugh; Tablespace:
 --
 
 CREATE TABLE game_person_link (
@@ -269,12 +269,12 @@ ALTER SEQUENCE game_person_link_person_id_seq OWNED BY game_person_link.person_i
 
 
 --
--- Name: game_status; Type: TABLE; Schema: public; Owner: brolaugh; Tablespace: 
+-- Name: game_status; Type: TABLE; Schema: public; Owner: brolaugh; Tablespace:
 --
 
 CREATE TABLE game_status (
     id integer NOT NULL,
-    name integer
+    name character varying(30)
 );
 
 
@@ -302,7 +302,7 @@ ALTER SEQUENCE game_status_id_seq OWNED BY game_status.id;
 
 
 --
--- Name: goals; Type: TABLE; Schema: public; Owner: brolaugh; Tablespace: 
+-- Name: goals; Type: TABLE; Schema: public; Owner: brolaugh; Tablespace:
 --
 
 CREATE TABLE goals (
@@ -336,7 +336,7 @@ ALTER SEQUENCE goals_id_seq OWNED BY goals.id;
 
 
 --
--- Name: org; Type: TABLE; Schema: public; Owner: brolaugh; Tablespace: 
+-- Name: org; Type: TABLE; Schema: public; Owner: brolaugh; Tablespace:
 --
 
 CREATE TABLE org (
@@ -369,14 +369,14 @@ ALTER SEQUENCE org_id_seq OWNED BY org.id;
 
 
 --
--- Name: person; Type: TABLE; Schema: public; Owner: brolaugh; Tablespace: 
+-- Name: person; Type: TABLE; Schema: public; Owner: brolaugh; Tablespace:
 --
 
 CREATE TABLE person (
     id integer NOT NULL,
     fname character varying(30) NOT NULL,
     sname character varying(40) NOT NULL,
-    social_sec integer NOT NULL
+    social_sec bigint NOT NULL
 );
 
 
@@ -404,7 +404,7 @@ ALTER SEQUENCE person_id_seq OWNED BY person.id;
 
 
 --
--- Name: role; Type: TABLE; Schema: public; Owner: brolaugh; Tablespace: 
+-- Name: role; Type: TABLE; Schema: public; Owner: brolaugh; Tablespace:
 --
 
 CREATE TABLE role (
@@ -437,7 +437,7 @@ ALTER SEQUENCE role_id_seq OWNED BY role.id;
 
 
 --
--- Name: season; Type: TABLE; Schema: public; Owner: brolaugh; Tablespace: 
+-- Name: season; Type: TABLE; Schema: public; Owner: brolaugh; Tablespace:
 --
 
 CREATE TABLE season (
@@ -472,7 +472,7 @@ ALTER SEQUENCE season_id_seq OWNED BY season.id;
 
 
 --
--- Name: team; Type: TABLE; Schema: public; Owner: brolaugh; Tablespace: 
+-- Name: team; Type: TABLE; Schema: public; Owner: brolaugh; Tablespace:
 --
 
 CREATE TABLE team (
@@ -506,7 +506,7 @@ ALTER SEQUENCE team_id_seq OWNED BY team.id;
 
 
 --
--- Name: team_person_link; Type: TABLE; Schema: public; Owner: brolaugh; Tablespace: 
+-- Name: team_person_link; Type: TABLE; Schema: public; Owner: brolaugh; Tablespace:
 --
 
 CREATE TABLE team_person_link (
@@ -543,7 +543,7 @@ ALTER SEQUENCE team_person_link_id_seq OWNED BY team_person_link.id;
 
 
 --
--- Name: team_season_link; Type: TABLE; Schema: public; Owner: brolaugh; Tablespace: 
+-- Name: team_season_link; Type: TABLE; Schema: public; Owner: brolaugh; Tablespace:
 --
 
 CREATE TABLE team_season_link (
@@ -696,7 +696,7 @@ ALTER TABLE ONLY team_season_link ALTER COLUMN id SET DEFAULT nextval('team_seas
 
 
 --
--- Name: arena_pkey; Type: CONSTRAINT; Schema: public; Owner: brolaugh; Tablespace: 
+-- Name: arena_pkey; Type: CONSTRAINT; Schema: public; Owner: brolaugh; Tablespace:
 --
 
 ALTER TABLE ONLY arena
@@ -704,7 +704,7 @@ ALTER TABLE ONLY arena
 
 
 --
--- Name: audience_pkey; Type: CONSTRAINT; Schema: public; Owner: brolaugh; Tablespace: 
+-- Name: audience_pkey; Type: CONSTRAINT; Schema: public; Owner: brolaugh; Tablespace:
 --
 
 ALTER TABLE ONLY audience
@@ -712,7 +712,7 @@ ALTER TABLE ONLY audience
 
 
 --
--- Name: event_types_pkey; Type: CONSTRAINT; Schema: public; Owner: brolaugh; Tablespace: 
+-- Name: event_types_pkey; Type: CONSTRAINT; Schema: public; Owner: brolaugh; Tablespace:
 --
 
 ALTER TABLE ONLY event_types
@@ -720,7 +720,7 @@ ALTER TABLE ONLY event_types
 
 
 --
--- Name: game_person_link_pkey; Type: CONSTRAINT; Schema: public; Owner: brolaugh; Tablespace: 
+-- Name: game_person_link_pkey; Type: CONSTRAINT; Schema: public; Owner: brolaugh; Tablespace:
 --
 
 ALTER TABLE ONLY game_person_link
@@ -728,7 +728,7 @@ ALTER TABLE ONLY game_person_link
 
 
 --
--- Name: game_pkey; Type: CONSTRAINT; Schema: public; Owner: brolaugh; Tablespace: 
+-- Name: game_pkey; Type: CONSTRAINT; Schema: public; Owner: brolaugh; Tablespace:
 --
 
 ALTER TABLE ONLY game
@@ -736,7 +736,7 @@ ALTER TABLE ONLY game
 
 
 --
--- Name: game_status_pkey; Type: CONSTRAINT; Schema: public; Owner: brolaugh; Tablespace: 
+-- Name: game_status_pkey; Type: CONSTRAINT; Schema: public; Owner: brolaugh; Tablespace:
 --
 
 ALTER TABLE ONLY game_status
@@ -744,7 +744,7 @@ ALTER TABLE ONLY game_status
 
 
 --
--- Name: goals_pkey; Type: CONSTRAINT; Schema: public; Owner: brolaugh; Tablespace: 
+-- Name: goals_pkey; Type: CONSTRAINT; Schema: public; Owner: brolaugh; Tablespace:
 --
 
 ALTER TABLE ONLY goals
@@ -752,7 +752,7 @@ ALTER TABLE ONLY goals
 
 
 --
--- Name: org_pkey; Type: CONSTRAINT; Schema: public; Owner: brolaugh; Tablespace: 
+-- Name: org_pkey; Type: CONSTRAINT; Schema: public; Owner: brolaugh; Tablespace:
 --
 
 ALTER TABLE ONLY org
@@ -760,7 +760,7 @@ ALTER TABLE ONLY org
 
 
 --
--- Name: person_pkey; Type: CONSTRAINT; Schema: public; Owner: brolaugh; Tablespace: 
+-- Name: person_pkey; Type: CONSTRAINT; Schema: public; Owner: brolaugh; Tablespace:
 --
 
 ALTER TABLE ONLY person
@@ -768,7 +768,7 @@ ALTER TABLE ONLY person
 
 
 --
--- Name: person_social_sec_key; Type: CONSTRAINT; Schema: public; Owner: brolaugh; Tablespace: 
+-- Name: person_social_sec_key; Type: CONSTRAINT; Schema: public; Owner: brolaugh; Tablespace:
 --
 
 ALTER TABLE ONLY person
@@ -776,7 +776,7 @@ ALTER TABLE ONLY person
 
 
 --
--- Name: role_name_key; Type: CONSTRAINT; Schema: public; Owner: brolaugh; Tablespace: 
+-- Name: role_name_key; Type: CONSTRAINT; Schema: public; Owner: brolaugh; Tablespace:
 --
 
 ALTER TABLE ONLY role
@@ -784,7 +784,7 @@ ALTER TABLE ONLY role
 
 
 --
--- Name: role_pkey; Type: CONSTRAINT; Schema: public; Owner: brolaugh; Tablespace: 
+-- Name: role_pkey; Type: CONSTRAINT; Schema: public; Owner: brolaugh; Tablespace:
 --
 
 ALTER TABLE ONLY role
@@ -792,7 +792,7 @@ ALTER TABLE ONLY role
 
 
 --
--- Name: season_pkey; Type: CONSTRAINT; Schema: public; Owner: brolaugh; Tablespace: 
+-- Name: season_pkey; Type: CONSTRAINT; Schema: public; Owner: brolaugh; Tablespace:
 --
 
 ALTER TABLE ONLY season
@@ -800,7 +800,15 @@ ALTER TABLE ONLY season
 
 
 --
--- Name: team_pkey; Type: CONSTRAINT; Schema: public; Owner: brolaugh; Tablespace: 
+-- Name: team_person_link_pkey; Type: CONSTRAINT; Schema: public; Owner: brolaugh; Tablespace:
+--
+
+ALTER TABLE ONLY team_person_link
+    ADD CONSTRAINT team_person_link_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: team_pkey; Type: CONSTRAINT; Schema: public; Owner: brolaugh; Tablespace:
 --
 
 ALTER TABLE ONLY team
@@ -808,7 +816,7 @@ ALTER TABLE ONLY team
 
 
 --
--- Name: team_season_link_pkey; Type: CONSTRAINT; Schema: public; Owner: brolaugh; Tablespace: 
+-- Name: team_season_link_pkey; Type: CONSTRAINT; Schema: public; Owner: brolaugh; Tablespace:
 --
 
 ALTER TABLE ONLY team_season_link
@@ -964,4 +972,3 @@ GRANT ALL ON SCHEMA public TO PUBLIC;
 --
 -- PostgreSQL database dump complete
 --
-
