@@ -13,10 +13,6 @@
     *  $this->connection = pg_connect("host".DB_HOST." dbname=".DB_DB." user=".DB_USERNAME." password=".DB_PASSWORD." options='--client_encoding=UTF8'")
     *    or die('Could not connect: ' . pg_last_error());
     *}
-    *
-    *
-    *
-    *
     */
     private function getSimpleView($view){
       $query = "SELECT * FROM ". $view;
@@ -31,11 +27,12 @@
       return $objAr;
     }
     public function getAllgetAllFullTeamName(){
+                            //SELECT org.name AS org_name, team.name AS team_name FROM team JOIN org ON team.org_id = org.id;
       return getSimpleView("getAllFullTeamName");
     }
     public function getAllOrgName(){
+                            //SELECT org.name FROM org;
       return getSimpleView("getAllOrgName");
     }
   }
-
 ?>

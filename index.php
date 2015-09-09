@@ -1,9 +1,15 @@
 <?php
   namespace sportLeague;
-  use sportLeague\app\database;
+
+  require 'App/database/select.php';
+
   echo "<h1>Test 123</1h>";
-  $select = sportLeague\app\database\Select();
-  
+  $select = new sportLeague\app\database\Select();
+  $tn = $select->getAllgetAllFullTeamName();
+  foreach ($tn as $key => $value) {
+    echo $value->org_name . " " . $value->team_name;
+  }
+
 ?>
 <!DOCTYPE html>
 <html lang="sv">
