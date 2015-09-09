@@ -1,6 +1,6 @@
 <?php
   namespace sportLeague;
-  
+
 ?>
 <!DOCTYPE html>
 <html lang="sv">
