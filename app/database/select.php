@@ -18,26 +18,23 @@
     *
     *
     */
+    private function getSimpleView($view){
+      $query = "SELECT * FROM ". $view;
+      pg_query_params($this->con, $query);
+      $objAr = array();
+      while($obj = pg_fetch_object($this->con)){
+        array_push($objAr, $obj);
+      }
 
-    //Functions without arguements will are written with views that are in the database
+      echo "Function worked!\n";
+      echo "Huzza!";
+      return $objAr;
+    }
     public function getAllgetAllFullTeamName(){
-      $query = "SELECT * FROM getAllFullTeamName";
+      return getSimpleView("getAllFullTeamName");
     }
     public function getAllOrgName(){
-      $query = "SELECT * FROM getAllFullTeamName";
-    }
-
-    public function __call($name, $arg){
-      $avalibleFunctions = Array("getAllOrgName","getAllgetAllFullTeamName");
-      if(in_array($name, $avalibleFunctions)){
-        $this.calledFunction($name);
-      }
-      else{
-        throw new Exception("Function <b>$name</b> does not exist!");
-      }
-    }
-    private function calledFunction($func){
-      $query = "SELECT * FROM ".$func;
+      return getSimpleView("getAllOrgName");
     }
   }
 

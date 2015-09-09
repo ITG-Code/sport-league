@@ -1,6 +1,9 @@
 <?php
   namespace sportLeague;
-
+  use sportLeague\app\database;
+  echo "<h1>Test 123</1h>";
+  $select = sportLeague\app\database\Select();
+  
 ?>
 <!DOCTYPE html>
 <html lang="sv">
