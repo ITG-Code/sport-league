@@ -1,38 +1,43 @@
 <?php
-  namespace sportLeague\app\database;
-  class Select extends dbSetup{
-    /**
-    *private $connection;
-    *const DB_HOST = "";
-    *const DB_DB = "";
-    *const DB_USERNAME = "";
-    *const DB_PASSWORD = "";
-    *
-    *
-    *function __construct(){
-    *  $this->connection = pg_connect("host".DB_HOST." dbname=".DB_DB." user=".DB_USERNAME." password=".DB_PASSWORD." options='--client_encoding=UTF8'")
-    *    or die('Could not connect: ' . pg_last_error());
-    *}
-    */
-    private function getSimpleView($view){
-      $query = "SELECT * FROM ". $view;
-      pg_query_params($this->con, $query);
-      $objAr = array();
-      while($obj = pg_fetch_object($this->con)){
-        array_push($objAr, $obj);
-      }
+require 'dbSetup.php';
+class Select extends dbSetup{
 
-      echo "Function worked!\n";
-      echo "Huzza!";
-      return $objAr;
+  public function getScoreBoardBySeason($s){
+    require 'App/objects/SeasonObjects.php';
+    //Fetches the goals that a team has done in a certain game
+    $stmt = $db->prepare(''); //Rickardh add the query
+    $stmt->bind_param('i', $s);
+    $stmt->execute();
+    $r = array();
+    $obj = new SeasonObjects();
+    while($t1 = $stmt->fetch_object()){
+      $t2 = $stmt->fetch_object();
+      $obj->add($t1, $t2);
     }
-    public function getAllgetAllFullTeamName(){
-                            //SELECT org.name AS org_name, team.name AS team_name FROM team JOIN org ON team.org_id = org.id;
-      return getSimpleView("getAllFullTeamName");
-    }
-    public function getAllOrgName(){
-                            //SELECT org.name FROM org;
-      return getSimpleView("getAllOrgName");
-    }
+    return $obj->fetchAll();
   }
+
+  public function getAllgetAllFullTeamName(){
+    $stmt = $db->prepare("SELECT org.name AS org_name, team.name AS team_name FROM team JOIN org ON team.org_id = org.id");
+    $stmt->execute();
+    $stmt->bind_result($on, $tn);
+    $retval = array();
+    while($stmt->fetch()){
+      array_push($retval, (object) array('orgName' => $orgName, 'teamName' => $teamName));
+    }
+    return $retval;
+  }
+  public function getAllOrgName(){
+    $stmt = $db->prepare("SELECT org.name FROM org");
+    $stmt->execute();
+    $stmt->bind_result($on);
+    $retval = array();
+    while($stmt->fetch()){
+      array_push($retval, $on);
+    }
+    return $retval;
+  }
+  public function getMatchDetails($mid){
+  }
+}
 ?>

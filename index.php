@@ -1,15 +1,9 @@
 <?php
-  namespace sportLeague;
+require 'App/database/select.php';
 
-  require 'App/database/select.php';
+$select = new Select();
 
-  echo "<h1>Test 123</1h>";
-  $select = new sportLeague\app\database\Select();
-  $tn = $select->getAllgetAllFullTeamName();
-  foreach ($tn as $key => $value) {
-    echo $value->org_name . " " . $value->team_name;
-  }
-
+$select->getScoreBoardBySeason(1);
 ?>
 <!DOCTYPE html>
 <html lang="sv">
@@ -84,6 +78,40 @@
         </ul>
       </div>
     </nav>
+
+    <!-- Put shit here-->
+    <div class="row">
+      <div class="col-md-4">
+
+        <!-- Score table -->
+        <table class="table table-striped table-hover ">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Team</th>
+              <th>Score</th>
+              <th>Wins</th>
+              <th>Loses</th>
+            </tr>
+          </thead>
+          <tbody>
+            <?php
+              //Add league getting function
+              for($i = 0;$i < 15;$i++){
+                echo "<tr>";
+                echo "<td>" . $i . "</td>";
+                echo "<td>*Insert Team here</td>";
+                echo "<td>*Insert Score here</td>";
+                echo "<td>*Insert Wins here</td>";
+                echo "<td>*Insert Loses here</td>";
+                echo "</tr>";
+              }
+            ?>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
     <footer class="row">
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
       <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
