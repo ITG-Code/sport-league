@@ -1,6 +1,7 @@
 <?php
 require 'App/database/select.php';
-
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
 $select = new Select();
 
 $select->getScoreBoardBySeason(1);

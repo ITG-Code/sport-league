@@ -1,6 +1,6 @@
 <?php
   class dbSetup{
-    private $db;
+    protected $db;
     private $DB_HOST = "";
     private $DB_DB = "";
     private $DB_USERNAME = "";

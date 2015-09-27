@@ -1,20 +1,40 @@
 <?php
-require 'dbSetup.php';
+require 'App/database/dbSetup.php';
 class Select extends dbSetup{
 
+  //Fetches the goals that a team has done in a certain game
   public function getScoreBoardBySeason($s){
     require 'App/objects/SeasonObjects.php';
-    //Fetches the goals that a team has done in a certain game
-    $stmt = $db->prepare(''); //Rickardh add the query
+
+    $q = "SELECT game_id, team_id, SUM( Goals ) AS teamGoals, team.name AS team_name, org.name AS org_name
+    FROM (
+
+      SELECT game_person_link.id AS game_person_id, team_person_link.team_id AS team_id, game_person_link.game_id AS game_id, (
+
+        SELECT COUNT( * )
+        FROM goals
+        WHERE goals.game_person_id = game_person_link.id
+      ) AS Goals
+      FROM game_person_link
+      LEFT JOIN team_person_link ON game_person_link.team_person_id = team_person_link.id
+      LEFT JOIN game ON game_person_link.game_id = game.id
+      WHERE season_id =?
+    ) AS allGoals
+    LEFT JOIN team ON team.id = team_id
+    LEFT JOIN org ON org.id = team.org_id
+    GROUP BY game_id, team_id";
+
+
+    $stmt = $this->db->prepare($q);
     $stmt->bind_param('i', $s);
     $stmt->execute();
     $r = array();
-    $obj = new SeasonObjects();
-    while($t1 = $stmt->fetch_object()){
-      $t2 = $stmt->fetch_object();
-      $obj->add($t1, $t2);
-    }
-    return $obj->fetchAll();
+    $obj = new SeasonScore();
+        $result = $stmt->get_result();
+        while ($t1 = $result->fetch_object()){
+          $t2 = $result->fetch_object();
+          $obj->add($t1, $t2);
+        }
   }
 
   public function getAllgetAllFullTeamName(){
