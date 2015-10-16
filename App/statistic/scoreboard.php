@@ -57,7 +57,7 @@
 					$teams[$Gonekey]['loses'] += 1;
 					$teams[$Gonekey]['goals'] += $team2->teamGoals;
 					$teams[$Gonekey]['matches'] += 1;
-					$teams[$Gonekey]['goalsAgainst'] += $team1->teamGoals;
+					$teams[$Gonekey]['goalsAgainst'] += $team->teamGoals;
 				}elseif ($team->teamGoals < $team2->teamGoals) {
 					$teams[$Homekey]['loses'] += 1;
 					$teams[$Homekey]['goals'] += $team->teamGoals;
@@ -68,7 +68,7 @@
 					$teams[$Gonekey]['points'] += 2;
 					$teams[$Gonekey]['goals'] += $team2->teamGoals;
 					$teams[$Gonekey]['matches'] += 1;
-					$teams[$Gonekey]['goalsAgainst'] += $team1->teamGoals;
+					$teams[$Gonekey]['goalsAgainst'] += $team->teamGoals;
 				}else{
 					$teams[$Homekey]['ties'] += 1;
 					$teams[$Homekey]['points'] += 1;
@@ -80,7 +80,7 @@
 					$teams[$Gonekey]['points'] += 1;
 					$teams[$Gonekey]['goals'] += $team2->teamGoals;
 					$teams[$Gonekey]['matches'] += 1;
-					$teams[$Gonekey]['goalsAgainst'] += $team1->teamGoals;
+					$teams[$Gonekey]['goalsAgainst'] += $team->teamGoals;
 				}
 			}
 			for ($i=0; $i < count($teams); $i++) { 
