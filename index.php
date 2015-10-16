@@ -1,9 +1,21 @@
 <?php
 require 'App/database/select.php';
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+require 'App/admin/scheduler.php';
+require 'App/admin/seasongen.php';
+$s = new SeasonGen(array(1,2,3,4,5,6));
+$s->makeRobin();
+while($r = $s->getNextMatch()){
+  echo $r[0] . " " . $r[1];
+  echo "<br>";
+}
+echo "Derp";
 
-$select = new Select();
 
-$select->getScoreBoardBySeason(1);
+$currTime = $_SERVER['REQUEST_TIME'];
+
+/*
 ?>
 <!DOCTYPE html>
 <html lang="sv">
@@ -123,3 +135,4 @@ $select->getScoreBoardBySeason(1);
 
 </body>
 </html>
+*/

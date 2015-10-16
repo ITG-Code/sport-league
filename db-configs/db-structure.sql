@@ -1,240 +1,1052 @@
--- phpMyAdmin SQL Dump
--- version 4.0.10deb1
--- http://www.phpmyadmin.net
 --
--- Host: localhost
--- Generation Time: Sep 22, 2015 at 08:12 PM
--- Server version: 5.5.44-0ubuntu0.14.04.1
--- PHP Version: 5.5.9-1ubuntu4.11
-
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET time_zone = "+00:00";
-
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
-
---
--- Database: `sportleague`
+-- PostgreSQL database dump
 --
 
--- --------------------------------------------------------
+SET statement_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = off;
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+SET escape_string_warning = off;
+
+SET search_path = public, pg_catalog;
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
 
 --
--- Table structure for table `arena`
+-- Name: arena; Type: TABLE; Schema: public; Owner: brolaugh; Tablespace: 
 --
 
-CREATE TABLE IF NOT EXISTS `arena` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(50) NOT NULL,
-  `adress` varchar(50) NOT NULL,
-  `city` varchar(30) NOT NULL,
-  `owner` int(11) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+CREATE TABLE arena (
+    id integer NOT NULL,
+    name character varying(50),
+    city character varying(30),
+    adress character varying(50),
+    adress_nr character varying(4),
+    owner integer,
+    zip_code integer
+);
 
--- --------------------------------------------------------
 
---
--- Table structure for table `audience`
---
-
-CREATE TABLE IF NOT EXISTS `audience` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `total` int(11) NOT NULL,
-  `game_id` int(11) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
-
--- --------------------------------------------------------
+ALTER TABLE public.arena OWNER TO brolaugh;
 
 --
--- Table structure for table `events`
+-- Name: arena_id_seq; Type: SEQUENCE; Schema: public; Owner: brolaugh
 --
 
-CREATE TABLE IF NOT EXISTS `events` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `type_id` int(11) NOT NULL,
-  `game_person_id` int(11) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+CREATE SEQUENCE arena_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
 
--- --------------------------------------------------------
 
---
--- Table structure for table `event_types`
---
-
-CREATE TABLE IF NOT EXISTS `event_types` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(20) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
-
--- --------------------------------------------------------
+ALTER TABLE public.arena_id_seq OWNER TO brolaugh;
 
 --
--- Table structure for table `game`
+-- Name: arena_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: brolaugh
 --
 
-CREATE TABLE IF NOT EXISTS `game` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `start_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `home_team_id` int(11) NOT NULL,
-  `gone_team_id` int(11) NOT NULL,
-  `status_id` int(11) NOT NULL,
-  `arena_id` int(11) NOT NULL,
-  `season_id` int(11) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=12 ;
+ALTER SEQUENCE arena_id_seq OWNED BY arena.id;
 
--- --------------------------------------------------------
 
 --
--- Table structure for table `game_person_link`
+-- Name: audience; Type: TABLE; Schema: public; Owner: brolaugh; Tablespace: 
 --
 
-CREATE TABLE IF NOT EXISTS `game_person_link` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `team_person_id` int(11) NOT NULL,
-  `game_id` int(11) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=18 ;
+CREATE TABLE audience (
+    id integer NOT NULL,
+    total integer,
+    game_id integer
+);
 
--- --------------------------------------------------------
 
---
--- Table structure for table `game_status`
---
-
-CREATE TABLE IF NOT EXISTS `game_status` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(30) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=6 ;
-
--- --------------------------------------------------------
+ALTER TABLE public.audience OWNER TO brolaugh;
 
 --
--- Table structure for table `goals`
+-- Name: audience_id_seq; Type: SEQUENCE; Schema: public; Owner: brolaugh
 --
 
-CREATE TABLE IF NOT EXISTS `goals` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `game_person_id` int(11) NOT NULL,
-  `type` int(11) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=22 ;
+CREATE SEQUENCE audience_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
 
--- --------------------------------------------------------
 
---
--- Table structure for table `org`
---
-
-CREATE TABLE IF NOT EXISTS `org` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(40) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
-
--- --------------------------------------------------------
+ALTER TABLE public.audience_id_seq OWNER TO brolaugh;
 
 --
--- Table structure for table `person`
+-- Name: audience_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: brolaugh
 --
 
-CREATE TABLE IF NOT EXISTS `person` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `fname` varchar(30) NOT NULL,
-  `sname` varchar(40) NOT NULL,
-  `social_sec` bigint(11) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=16 ;
+ALTER SEQUENCE audience_id_seq OWNED BY audience.id;
 
--- --------------------------------------------------------
 
 --
--- Table structure for table `role`
+-- Name: event_types; Type: TABLE; Schema: public; Owner: brolaugh; Tablespace: 
 --
 
-CREATE TABLE IF NOT EXISTS `role` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(30) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=12 ;
+CREATE TABLE event_types (
+    id integer NOT NULL,
+    name character varying(20)
+);
 
--- --------------------------------------------------------
 
---
--- Table structure for table `season`
---
-
-CREATE TABLE IF NOT EXISTS `season` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(30) NOT NULL,
-  `start_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `end_date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
-
--- --------------------------------------------------------
+ALTER TABLE public.event_types OWNER TO brolaugh;
 
 --
--- Table structure for table `team`
+-- Name: event_types_id_seq; Type: SEQUENCE; Schema: public; Owner: brolaugh
 --
 
-CREATE TABLE IF NOT EXISTS `team` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(40) NOT NULL,
-  `org_id` int(11) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=13 ;
+CREATE SEQUENCE event_types_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
 
--- --------------------------------------------------------
 
---
--- Table structure for table `team_person_leave`
---
-
-CREATE TABLE IF NOT EXISTS `team_person_leave` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `team_person_id` int(11) NOT NULL,
-  `leavedate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
-
--- --------------------------------------------------------
+ALTER TABLE public.event_types_id_seq OWNER TO brolaugh;
 
 --
--- Table structure for table `team_person_link`
+-- Name: event_types_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: brolaugh
 --
 
-CREATE TABLE IF NOT EXISTS `team_person_link` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `joindate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `role_id` int(11) NOT NULL,
-  `team_id` int(11) NOT NULL,
-  `person_id` int(11) NOT NULL,
-  `shirt_nr` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=16 ;
+ALTER SEQUENCE event_types_id_seq OWNED BY event_types.id;
 
--- --------------------------------------------------------
 
 --
--- Table structure for table `team_season_link`
+-- Name: events; Type: TABLE; Schema: public; Owner: brolaugh; Tablespace: 
 --
 
-CREATE TABLE IF NOT EXISTS `team_season_link` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `season_id` int(11) NOT NULL,
-  `team_id` int(11) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=13 ;
+CREATE TABLE events (
+    id integer NOT NULL,
+    type_id integer,
+    game_person_link_id integer
+);
 
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+ALTER TABLE public.events OWNER TO brolaugh;
+
+--
+-- Name: events_id_seq; Type: SEQUENCE; Schema: public; Owner: brolaugh
+--
+
+CREATE SEQUENCE events_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.events_id_seq OWNER TO brolaugh;
+
+--
+-- Name: events_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: brolaugh
+--
+
+ALTER SEQUENCE events_id_seq OWNED BY events.id;
+
+
+--
+-- Name: game; Type: TABLE; Schema: public; Owner: brolaugh; Tablespace: 
+--
+
+CREATE TABLE game (
+    id integer NOT NULL,
+    start_time timestamp with time zone,
+    home_team_id integer,
+    gone_team_id integer,
+    status_id integer,
+    arena_id integer,
+    season_id integer
+);
+
+
+ALTER TABLE public.game OWNER TO brolaugh;
+
+--
+-- Name: game_id_seq; Type: SEQUENCE; Schema: public; Owner: brolaugh
+--
+
+CREATE SEQUENCE game_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.game_id_seq OWNER TO brolaugh;
+
+--
+-- Name: game_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: brolaugh
+--
+
+ALTER SEQUENCE game_id_seq OWNED BY game.id;
+
+
+--
+-- Name: game_person_link; Type: TABLE; Schema: public; Owner: brolaugh; Tablespace: 
+--
+
+CREATE TABLE game_person_link (
+    id integer NOT NULL,
+    team_person_id integer NOT NULL,
+    game_id integer NOT NULL
+);
+
+
+ALTER TABLE public.game_person_link OWNER TO brolaugh;
+
+--
+-- Name: game_person_link_game_id_seq; Type: SEQUENCE; Schema: public; Owner: brolaugh
+--
+
+CREATE SEQUENCE game_person_link_game_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.game_person_link_game_id_seq OWNER TO brolaugh;
+
+--
+-- Name: game_person_link_game_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: brolaugh
+--
+
+ALTER SEQUENCE game_person_link_game_id_seq OWNED BY game_person_link.game_id;
+
+
+--
+-- Name: game_person_link_id_seq; Type: SEQUENCE; Schema: public; Owner: brolaugh
+--
+
+CREATE SEQUENCE game_person_link_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.game_person_link_id_seq OWNER TO brolaugh;
+
+--
+-- Name: game_person_link_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: brolaugh
+--
+
+ALTER SEQUENCE game_person_link_id_seq OWNED BY game_person_link.id;
+
+
+--
+-- Name: game_person_link_person_id_seq; Type: SEQUENCE; Schema: public; Owner: brolaugh
+--
+
+CREATE SEQUENCE game_person_link_person_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.game_person_link_person_id_seq OWNER TO brolaugh;
+
+--
+-- Name: game_person_link_person_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: brolaugh
+--
+
+ALTER SEQUENCE game_person_link_person_id_seq OWNED BY game_person_link.team_person_id;
+
+
+--
+-- Name: game_status; Type: TABLE; Schema: public; Owner: brolaugh; Tablespace: 
+--
+
+CREATE TABLE game_status (
+    id integer NOT NULL,
+    name character varying(30)
+);
+
+
+ALTER TABLE public.game_status OWNER TO brolaugh;
+
+--
+-- Name: game_status_id_seq; Type: SEQUENCE; Schema: public; Owner: brolaugh
+--
+
+CREATE SEQUENCE game_status_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.game_status_id_seq OWNER TO brolaugh;
+
+--
+-- Name: game_status_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: brolaugh
+--
+
+ALTER SEQUENCE game_status_id_seq OWNED BY game_status.id;
+
+
+--
+-- Name: org; Type: TABLE; Schema: public; Owner: brolaugh; Tablespace: 
+--
+
+CREATE TABLE org (
+    id integer NOT NULL,
+    name character varying NOT NULL
+);
+
+
+ALTER TABLE public.org OWNER TO brolaugh;
+
+--
+-- Name: team; Type: TABLE; Schema: public; Owner: brolaugh; Tablespace: 
+--
+
+CREATE TABLE team (
+    id integer NOT NULL,
+    name character varying,
+    org_id integer
+);
+
+
+ALTER TABLE public.team OWNER TO brolaugh;
+
+--
+-- Name: getAllFullTeamName; Type: VIEW; Schema: public; Owner: brolaugh
+--
+
+CREATE VIEW "getAllFullTeamName" AS
+    SELECT org.name AS org_name, team.name AS team_name FROM (team JOIN org ON ((team.org_id = org.id)));
+
+
+ALTER TABLE public."getAllFullTeamName" OWNER TO brolaugh;
+
+--
+-- Name: getAllOrgName; Type: VIEW; Schema: public; Owner: brolaugh
+--
+
+CREATE VIEW "getAllOrgName" AS
+    SELECT org.name FROM org;
+
+
+ALTER TABLE public."getAllOrgName" OWNER TO brolaugh;
+
+--
+-- Name: goals; Type: TABLE; Schema: public; Owner: brolaugh; Tablespace: 
+--
+
+CREATE TABLE goals (
+    id integer NOT NULL,
+    game_person_link_id integer,
+    type integer
+);
+
+
+ALTER TABLE public.goals OWNER TO brolaugh;
+
+--
+-- Name: goals_id_seq; Type: SEQUENCE; Schema: public; Owner: brolaugh
+--
+
+CREATE SEQUENCE goals_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.goals_id_seq OWNER TO brolaugh;
+
+--
+-- Name: goals_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: brolaugh
+--
+
+ALTER SEQUENCE goals_id_seq OWNED BY goals.id;
+
+
+--
+-- Name: org_id_seq; Type: SEQUENCE; Schema: public; Owner: brolaugh
+--
+
+CREATE SEQUENCE org_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.org_id_seq OWNER TO brolaugh;
+
+--
+-- Name: org_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: brolaugh
+--
+
+ALTER SEQUENCE org_id_seq OWNED BY org.id;
+
+
+--
+-- Name: person; Type: TABLE; Schema: public; Owner: brolaugh; Tablespace: 
+--
+
+CREATE TABLE person (
+    id integer NOT NULL,
+    fname character varying(30) NOT NULL,
+    sname character varying(40) NOT NULL,
+    social_sec bigint NOT NULL
+);
+
+
+ALTER TABLE public.person OWNER TO brolaugh;
+
+--
+-- Name: person_id_seq; Type: SEQUENCE; Schema: public; Owner: brolaugh
+--
+
+CREATE SEQUENCE person_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.person_id_seq OWNER TO brolaugh;
+
+--
+-- Name: person_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: brolaugh
+--
+
+ALTER SEQUENCE person_id_seq OWNED BY person.id;
+
+
+--
+-- Name: role; Type: TABLE; Schema: public; Owner: brolaugh; Tablespace: 
+--
+
+CREATE TABLE role (
+    id integer NOT NULL,
+    name character varying(30) NOT NULL
+);
+
+
+ALTER TABLE public.role OWNER TO brolaugh;
+
+--
+-- Name: role_id_seq; Type: SEQUENCE; Schema: public; Owner: brolaugh
+--
+
+CREATE SEQUENCE role_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.role_id_seq OWNER TO brolaugh;
+
+--
+-- Name: role_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: brolaugh
+--
+
+ALTER SEQUENCE role_id_seq OWNED BY role.id;
+
+
+--
+-- Name: season; Type: TABLE; Schema: public; Owner: brolaugh; Tablespace: 
+--
+
+CREATE TABLE season (
+    id integer NOT NULL,
+    name character varying,
+    start_date timestamp with time zone,
+    end_date timestamp with time zone
+);
+
+
+ALTER TABLE public.season OWNER TO brolaugh;
+
+--
+-- Name: season_id_seq; Type: SEQUENCE; Schema: public; Owner: brolaugh
+--
+
+CREATE SEQUENCE season_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.season_id_seq OWNER TO brolaugh;
+
+--
+-- Name: season_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: brolaugh
+--
+
+ALTER SEQUENCE season_id_seq OWNED BY season.id;
+
+
+--
+-- Name: team_id_seq; Type: SEQUENCE; Schema: public; Owner: brolaugh
+--
+
+CREATE SEQUENCE team_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.team_id_seq OWNER TO brolaugh;
+
+--
+-- Name: team_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: brolaugh
+--
+
+ALTER SEQUENCE team_id_seq OWNED BY team.id;
+
+
+--
+-- Name: team_person_leave; Type: TABLE; Schema: public; Owner: brolaugh; Tablespace: 
+--
+
+CREATE TABLE team_person_leave (
+    id integer NOT NULL,
+    team_person_id integer,
+    leavedate timestamp with time zone
+);
+
+
+ALTER TABLE public.team_person_leave OWNER TO brolaugh;
+
+--
+-- Name: team_person_leave_id_seq; Type: SEQUENCE; Schema: public; Owner: brolaugh
+--
+
+CREATE SEQUENCE team_person_leave_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.team_person_leave_id_seq OWNER TO brolaugh;
+
+--
+-- Name: team_person_leave_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: brolaugh
+--
+
+ALTER SEQUENCE team_person_leave_id_seq OWNED BY team_person_leave.id;
+
+
+--
+-- Name: team_person_link; Type: TABLE; Schema: public; Owner: brolaugh; Tablespace: 
+--
+
+CREATE TABLE team_person_link (
+    id integer NOT NULL,
+    joindate timestamp with time zone,
+    role_id integer,
+    team_id integer,
+    person_id integer,
+    shirt_nr integer DEFAULT 0
+);
+
+
+ALTER TABLE public.team_person_link OWNER TO brolaugh;
+
+--
+-- Name: team_person_link_id_seq; Type: SEQUENCE; Schema: public; Owner: brolaugh
+--
+
+CREATE SEQUENCE team_person_link_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.team_person_link_id_seq OWNER TO brolaugh;
+
+--
+-- Name: team_person_link_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: brolaugh
+--
+
+ALTER SEQUENCE team_person_link_id_seq OWNED BY team_person_link.id;
+
+
+--
+-- Name: team_season_link; Type: TABLE; Schema: public; Owner: brolaugh; Tablespace: 
+--
+
+CREATE TABLE team_season_link (
+    id integer NOT NULL,
+    season_id integer,
+    team_id integer
+);
+
+
+ALTER TABLE public.team_season_link OWNER TO brolaugh;
+
+--
+-- Name: team_season_link_id_seq; Type: SEQUENCE; Schema: public; Owner: brolaugh
+--
+
+CREATE SEQUENCE team_season_link_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.team_season_link_id_seq OWNER TO brolaugh;
+
+--
+-- Name: team_season_link_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: brolaugh
+--
+
+ALTER SEQUENCE team_season_link_id_seq OWNED BY team_season_link.id;
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: brolaugh
+--
+
+ALTER TABLE ONLY arena ALTER COLUMN id SET DEFAULT nextval('arena_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: brolaugh
+--
+
+ALTER TABLE ONLY audience ALTER COLUMN id SET DEFAULT nextval('audience_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: brolaugh
+--
+
+ALTER TABLE ONLY event_types ALTER COLUMN id SET DEFAULT nextval('event_types_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: brolaugh
+--
+
+ALTER TABLE ONLY events ALTER COLUMN id SET DEFAULT nextval('events_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: brolaugh
+--
+
+ALTER TABLE ONLY game ALTER COLUMN id SET DEFAULT nextval('game_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: brolaugh
+--
+
+ALTER TABLE ONLY game_person_link ALTER COLUMN id SET DEFAULT nextval('game_person_link_id_seq'::regclass);
+
+
+--
+-- Name: team_person_id; Type: DEFAULT; Schema: public; Owner: brolaugh
+--
+
+ALTER TABLE ONLY game_person_link ALTER COLUMN team_person_id SET DEFAULT nextval('game_person_link_person_id_seq'::regclass);
+
+
+--
+-- Name: game_id; Type: DEFAULT; Schema: public; Owner: brolaugh
+--
+
+ALTER TABLE ONLY game_person_link ALTER COLUMN game_id SET DEFAULT nextval('game_person_link_game_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: brolaugh
+--
+
+ALTER TABLE ONLY game_status ALTER COLUMN id SET DEFAULT nextval('game_status_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: brolaugh
+--
+
+ALTER TABLE ONLY goals ALTER COLUMN id SET DEFAULT nextval('goals_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: brolaugh
+--
+
+ALTER TABLE ONLY org ALTER COLUMN id SET DEFAULT nextval('org_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: brolaugh
+--
+
+ALTER TABLE ONLY person ALTER COLUMN id SET DEFAULT nextval('person_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: brolaugh
+--
+
+ALTER TABLE ONLY role ALTER COLUMN id SET DEFAULT nextval('role_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: brolaugh
+--
+
+ALTER TABLE ONLY season ALTER COLUMN id SET DEFAULT nextval('season_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: brolaugh
+--
+
+ALTER TABLE ONLY team ALTER COLUMN id SET DEFAULT nextval('team_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: brolaugh
+--
+
+ALTER TABLE ONLY team_person_leave ALTER COLUMN id SET DEFAULT nextval('team_person_leave_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: brolaugh
+--
+
+ALTER TABLE ONLY team_person_link ALTER COLUMN id SET DEFAULT nextval('team_person_link_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: brolaugh
+--
+
+ALTER TABLE ONLY team_season_link ALTER COLUMN id SET DEFAULT nextval('team_season_link_id_seq'::regclass);
+
+
+--
+-- Name: arena_pkey; Type: CONSTRAINT; Schema: public; Owner: brolaugh; Tablespace: 
+--
+
+ALTER TABLE ONLY arena
+    ADD CONSTRAINT arena_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: audience_pkey; Type: CONSTRAINT; Schema: public; Owner: brolaugh; Tablespace: 
+--
+
+ALTER TABLE ONLY audience
+    ADD CONSTRAINT audience_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: event_types_pkey; Type: CONSTRAINT; Schema: public; Owner: brolaugh; Tablespace: 
+--
+
+ALTER TABLE ONLY event_types
+    ADD CONSTRAINT event_types_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: game_person_link_pkey; Type: CONSTRAINT; Schema: public; Owner: brolaugh; Tablespace: 
+--
+
+ALTER TABLE ONLY game_person_link
+    ADD CONSTRAINT game_person_link_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: game_pkey; Type: CONSTRAINT; Schema: public; Owner: brolaugh; Tablespace: 
+--
+
+ALTER TABLE ONLY game
+    ADD CONSTRAINT game_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: game_status_pkey; Type: CONSTRAINT; Schema: public; Owner: brolaugh; Tablespace: 
+--
+
+ALTER TABLE ONLY game_status
+    ADD CONSTRAINT game_status_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: goals_pkey; Type: CONSTRAINT; Schema: public; Owner: brolaugh; Tablespace: 
+--
+
+ALTER TABLE ONLY goals
+    ADD CONSTRAINT goals_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: org_pkey; Type: CONSTRAINT; Schema: public; Owner: brolaugh; Tablespace: 
+--
+
+ALTER TABLE ONLY org
+    ADD CONSTRAINT org_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: person_pkey; Type: CONSTRAINT; Schema: public; Owner: brolaugh; Tablespace: 
+--
+
+ALTER TABLE ONLY person
+    ADD CONSTRAINT person_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: person_social_sec_key; Type: CONSTRAINT; Schema: public; Owner: brolaugh; Tablespace: 
+--
+
+ALTER TABLE ONLY person
+    ADD CONSTRAINT person_social_sec_key UNIQUE (social_sec);
+
+
+--
+-- Name: role_name_key; Type: CONSTRAINT; Schema: public; Owner: brolaugh; Tablespace: 
+--
+
+ALTER TABLE ONLY role
+    ADD CONSTRAINT role_name_key UNIQUE (name);
+
+
+--
+-- Name: role_pkey; Type: CONSTRAINT; Schema: public; Owner: brolaugh; Tablespace: 
+--
+
+ALTER TABLE ONLY role
+    ADD CONSTRAINT role_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: season_pkey; Type: CONSTRAINT; Schema: public; Owner: brolaugh; Tablespace: 
+--
+
+ALTER TABLE ONLY season
+    ADD CONSTRAINT season_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: team_person_leave_pkey; Type: CONSTRAINT; Schema: public; Owner: brolaugh; Tablespace: 
+--
+
+ALTER TABLE ONLY team_person_leave
+    ADD CONSTRAINT team_person_leave_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: team_person_link_pkey; Type: CONSTRAINT; Schema: public; Owner: brolaugh; Tablespace: 
+--
+
+ALTER TABLE ONLY team_person_link
+    ADD CONSTRAINT team_person_link_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: team_pkey; Type: CONSTRAINT; Schema: public; Owner: brolaugh; Tablespace: 
+--
+
+ALTER TABLE ONLY team
+    ADD CONSTRAINT team_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: team_season_link_pkey; Type: CONSTRAINT; Schema: public; Owner: brolaugh; Tablespace: 
+--
+
+ALTER TABLE ONLY team_season_link
+    ADD CONSTRAINT team_season_link_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: arena_owner_fkey; Type: FK CONSTRAINT; Schema: public; Owner: brolaugh
+--
+
+ALTER TABLE ONLY arena
+    ADD CONSTRAINT arena_owner_fkey FOREIGN KEY (owner) REFERENCES org(id);
+
+
+--
+-- Name: audience_game_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: brolaugh
+--
+
+ALTER TABLE ONLY audience
+    ADD CONSTRAINT audience_game_id_fkey FOREIGN KEY (game_id) REFERENCES game(id);
+
+
+--
+-- Name: events_game_person_link_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: brolaugh
+--
+
+ALTER TABLE ONLY events
+    ADD CONSTRAINT events_game_person_link_id_fkey FOREIGN KEY (game_person_link_id) REFERENCES game_person_link(id);
+
+
+--
+-- Name: events_type_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: brolaugh
+--
+
+ALTER TABLE ONLY events
+    ADD CONSTRAINT events_type_id_fkey FOREIGN KEY (type_id) REFERENCES event_types(id);
+
+
+--
+-- Name: game_arena_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: brolaugh
+--
+
+ALTER TABLE ONLY game
+    ADD CONSTRAINT game_arena_id_fkey FOREIGN KEY (arena_id) REFERENCES arena(id);
+
+
+--
+-- Name: game_gone_team_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: brolaugh
+--
+
+ALTER TABLE ONLY game
+    ADD CONSTRAINT game_gone_team_id_fkey FOREIGN KEY (gone_team_id) REFERENCES team(id);
+
+
+--
+-- Name: game_home_team_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: brolaugh
+--
+
+ALTER TABLE ONLY game
+    ADD CONSTRAINT game_home_team_id_fkey FOREIGN KEY (home_team_id) REFERENCES team(id);
+
+
+--
+-- Name: game_person_link_person_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: brolaugh
+--
+
+ALTER TABLE ONLY game_person_link
+    ADD CONSTRAINT game_person_link_person_id_fkey FOREIGN KEY (team_person_id) REFERENCES person(id);
+
+
+--
+-- Name: game_person_link_person_id_fkey1; Type: FK CONSTRAINT; Schema: public; Owner: brolaugh
+--
+
+ALTER TABLE ONLY game_person_link
+    ADD CONSTRAINT game_person_link_person_id_fkey1 FOREIGN KEY (team_person_id) REFERENCES team_person_link(id);
+
+
+--
+-- Name: game_season_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: brolaugh
+--
+
+ALTER TABLE ONLY game
+    ADD CONSTRAINT game_season_id_fkey FOREIGN KEY (season_id) REFERENCES season(id);
+
+
+--
+-- Name: game_status_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: brolaugh
+--
+
+ALTER TABLE ONLY game
+    ADD CONSTRAINT game_status_id_fkey FOREIGN KEY (status_id) REFERENCES game_status(id);
+
+
+--
+-- Name: goals_game_person_link_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: brolaugh
+--
+
+ALTER TABLE ONLY goals
+    ADD CONSTRAINT goals_game_person_link_id_fkey FOREIGN KEY (game_person_link_id) REFERENCES game_person_link(id);
+
+
+--
+-- Name: team_org_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: brolaugh
+--
+
+ALTER TABLE ONLY team
+    ADD CONSTRAINT team_org_id_fkey FOREIGN KEY (org_id) REFERENCES org(id);
+
+
+--
+-- Name: team_person_leave_team_person_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: brolaugh
+--
+
+ALTER TABLE ONLY team_person_leave
+    ADD CONSTRAINT team_person_leave_team_person_id_fkey FOREIGN KEY (team_person_id) REFERENCES team_person_link(id);
+
+
+--
+-- Name: team_person_link_role_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: brolaugh
+--
+
+ALTER TABLE ONLY team_person_link
+    ADD CONSTRAINT team_person_link_role_id_fkey FOREIGN KEY (role_id) REFERENCES role(id);
+
+
+--
+-- Name: team_person_link_team_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: brolaugh
+--
+
+ALTER TABLE ONLY team_person_link
+    ADD CONSTRAINT team_person_link_team_id_fkey FOREIGN KEY (team_id) REFERENCES team(id);
+
+
+--
+-- Name: team_season_link_season_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: brolaugh
+--
+
+ALTER TABLE ONLY team_season_link
+    ADD CONSTRAINT team_season_link_season_id_fkey FOREIGN KEY (season_id) REFERENCES season(id);
+
+
+--
+-- Name: team_season_link_team_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: brolaugh
+--
+
+ALTER TABLE ONLY team_season_link
+    ADD CONSTRAINT team_season_link_team_id_fkey FOREIGN KEY (team_id) REFERENCES team(id);
+
+
+--
+-- Name: public; Type: ACL; Schema: -; Owner: postgres
+--
+
+REVOKE ALL ON SCHEMA public FROM PUBLIC;
+REVOKE ALL ON SCHEMA public FROM postgres;
+GRANT ALL ON SCHEMA public TO postgres;
+GRANT ALL ON SCHEMA public TO PUBLIC;
+
+
+--
+-- PostgreSQL database dump complete
+--
+

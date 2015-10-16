@@ -1,23 +1,17 @@
 <?php
-require 'dbSetup.php';
+require 'App/database/dbSetup.php';
 class Select extends dbSetup{
 
-  public function getScoreBoardBySeason($s){
-    require 'App/objects/SeasonObjects.php';
-    //Fetches the goals that a team has done in a certain game
-    $stmt = $db->prepare(''); //Rickardh add the query
-    $stmt->bind_param('i', $s);
-    $stmt->execute();
-    $r = array();
-    $obj = new SeasonObjects();
-    while($t1 = $stmt->fetch_object()){
-      $t2 = $stmt->fetch_object();
-      $obj->add($t1, $t2);
-    }
-    return $obj->fetchAll();
+
+  public function getPersonProfle(){
+    "SELECT person.id, person.fName, person.sName, role, shirt_nr, weight, height team_id
+FROM person LEFT JOIN team_person ON person.id=team_person.person_id
+(SELECT person_id, shirt_nr, weight, height, team_id, role, team_person_leave FROM team_person_link LEFT JOIN role ON team_person_link.id=role.id FULL OUTER JOIN team_person_leave ON team_person_link.id=team_person_leave.team_person_link.id)
+as team_person WHERE team_person_leave=NULL;";
   }
 
-  public function getAllgetAllFullTeamName(){
+
+  public function getAllFullTeamName(){
     $stmt = $db->prepare("SELECT org.name AS org_name, team.name AS team_name FROM team JOIN org ON team.org_id = org.id");
     $stmt->execute();
     $stmt->bind_result($on, $tn);
@@ -28,7 +22,8 @@ class Select extends dbSetup{
     return $retval;
   }
   public function getAllOrgName(){
-    $stmt = $db->prepare("SELECT org.name FROM org");
+
+    $stmt = $this->db->prepare("SELECT org.name FROM org");
     $stmt->execute();
     $stmt->bind_result($on);
     $retval = array();
