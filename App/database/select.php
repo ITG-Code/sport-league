@@ -3,7 +3,14 @@ require 'App/database/dbSetup.php';
 class Select extends dbSetup{
 
 
+
+
   public function getPersonProfle(){
+    /**
+    *
+    * This function is supposed to get all of the data needed to later create a complete profile of a player
+    *
+    **/
     "SELECT person.id, person.fName, person.sName, role, shirt_nr, weight, height team_id
 FROM person LEFT JOIN team_person ON person.id=team_person.person_id
 (SELECT person_id, shirt_nr, weight, height, team_id, role, team_person_leave FROM team_person_link LEFT JOIN role ON team_person_link.id=role.id FULL OUTER JOIN team_person_leave ON team_person_link.id=team_person_leave.team_person_link.id)
@@ -12,6 +19,14 @@ as team_person WHERE team_person_leave=NULL;";
 
 
   public function getAllFullTeamName(){
+    /**
+    *
+    * This function returns a object array containing the attributes:
+    * teamName: the name of the team eg. U17
+    * orgName: the name of the org eg. Brolaugh's football club
+    *
+    **/
+    $stmt =
     $stmt = $db->prepare("SELECT org.name AS org_name, team.name AS team_name FROM team JOIN org ON team.org_id = org.id");
     $stmt->execute();
     $stmt->bind_result($on, $tn);
@@ -22,7 +37,11 @@ as team_person WHERE team_person_leave=NULL;";
     return $retval;
   }
   public function getAllOrgName(){
-
+    /**
+    *
+    * This function returns a string array of all the orginazation names
+    *
+    **/
     $stmt = $this->db->prepare("SELECT org.name FROM org");
     $stmt->execute();
     $stmt->bind_result($on);
