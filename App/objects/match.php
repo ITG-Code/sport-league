@@ -1,9 +1,9 @@
 <?php
   class Match{
     private $id;
-    private $startTime;
-    private $homeTeam;
-    private $goneTeam;
+    private $startTime; //Stored in unix time?
+    private $homeTeam; //Store a team object here?
+    private $goneTeam; //Store a team object here?
     private $arena;
     private $audience;
     private $status;
@@ -26,7 +26,7 @@
 
     }
     public function getEndTime(){
-      
+
     }
   }
 

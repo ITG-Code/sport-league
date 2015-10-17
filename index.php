@@ -13,8 +13,6 @@ while($r = $s->getNextMatch()){
 echo "Derp";
 
 
-$currTime = $_SERVER['REQUEST_TIME'];
-
 /*
 ?>
 <!DOCTYPE html>
