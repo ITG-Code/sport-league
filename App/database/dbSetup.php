@@ -16,5 +16,9 @@
       }
 
   }
+
+  public function getSQL($query){
+    return $this->db->query($query);
+  }
 }
 ?>

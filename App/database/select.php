@@ -1,20 +1,40 @@
 <?php
-require 'App/database/dbSetup.php';
+require_once('dbSetup.php');
+require_once('objects/player.php');
+
 class Select extends dbSetup{
 
-
-
-
-  public function getPersonProfle(){
+  public function getPersonProfile($id){
     /**
     *
     * This function is supposed to get all of the data needed to later create a complete profile of a player
     *
     **/
-    "SELECT person.id, person.fName, person.sName, role, shirt_nr, weight, height team_id
-FROM person LEFT JOIN team_person ON person.id=team_person.person_id
-(SELECT person_id, shirt_nr, weight, height, team_id, role, team_person_leave FROM team_person_link LEFT JOIN role ON team_person_link.id=role.id FULL OUTER JOIN team_person_leave ON team_person_link.id=team_person_leave.team_person_link.id)
-as team_person WHERE team_person_leave=NULL;";
+    $query = "SELECT team_person_link.id AS team_person_id, joindate, shirt_nr, weight, height, avatar, person.id AS person_id, person.fname AS fName, person.sname AS sName, person.social_sec AS social_sec, role.name, team.id as team_id, (SELECT COUNT(*) FROM game_person_link WHERE game_person_link.team_person_id = team_person_link.id) as matches, (team_person_link.id NOT IN (SELECT team_person_id FROM team_person_leave)) as left_team FROM team_person_link LEFT JOIN person ON team_person_link.person_id = person.id LEFT JOIN role ON team_person_link.role_id = role.id LEFT JOIN team ON team_person_link.team_id = team.id LEFT JOIN org ON team.org_id = org.id WHERE team_person_link.person_id = $id GROUP BY team_person_link.id ORDER BY team_person_link.joindate DESC";
+    $result = $this->getSQL($query);
+
+    $retPlayer;
+    $personSet = false;
+    while ($person = $result->fetch_object()) {
+      if(!$personSet){
+        $retPlayer = new Player($person->person_id, $person->fName, $person->sName, $person->social_sec, $person->height, $person->weight, $person->avatar);
+        $personSet = true;
+      }
+      $playerGoals = $this->getPlayerGoals($person->team_person_id);
+      $retPlayer->addPenaltyGoals($playerGoals->straff);
+      $retPlayer->addMatches($person->matches);
+      if($person->left_team == 1){
+        $retPlayer->addTeam($person->team_id);
+        $retPlayer->addShirtNr($person->shirt_nr);
+        $retPlayer->addGoals($playerGoals->goals);
+        $retPlayer->addTeamGoal($playerGoals->goals);
+      }else{
+        $retPlayer->addPastTeam($person->team_id);
+        $retPlayer->addLeftShirtNr($person->shirt_nr);
+        $retPlayer->addGoals($playerGoals->goals);
+      }
+    }
+    return $retPlayer;
   }
 
 
@@ -36,6 +56,7 @@ as team_person WHERE team_person_leave=NULL;";
     }
     return $retval;
   }
+  
   public function getAllOrgName(){
     /**
     *
@@ -51,6 +72,7 @@ as team_person WHERE team_person_leave=NULL;";
     }
     return $retval;
   }
+  
   public function getMatchDetails($mid){
     //This functions is supposed to get make a class out of a match containing who did what goals, what the scores where and so on.
   }
@@ -75,7 +97,7 @@ as team_person WHERE team_person_leave=NULL;";
     $teams = array();
 
     $query = "SELECT game_id, team_id, SUM( Goals ) AS teamGoals, team.name AS team_name, org.name AS org_name FROM (SELECT game_person_link.id AS game_person_id, team_person_link.team_id AS team_id, game_person_link.game_id AS game_id, (SELECT COUNT( * ) FROM goals WHERE goals.game_person_id = game_person_link.id) AS Goals FROM game_person_link LEFT JOIN team_person_link ON game_person_link.team_person_id = team_person_link.id LEFT JOIN game ON game_person_link.game_id = game.id WHERE game.season_id = $season) AS allGoals LEFT JOIN team ON team.id = team_id LEFT JOIN org ON org.id = team.org_id GROUP BY game_id, team_id;";
-    $result  = $this->db->getSQL($query);
+    $result  = $this->getSQL($query);
 
     while ($team = $result->fetch_object()) {
       $team2 = $result->fetch_object();
@@ -139,6 +161,34 @@ as team_person WHERE team_person_leave=NULL;";
     return $teams;
   }
 
+  public function getPlayerWins($teamID){
+    $wins = 0;
+
+    $query = "SELECT game_id, team_id, SUM( Goals ) AS teamGoals, team.name AS team_name, org.name AS org_name FROM (SELECT game_person_link.id AS game_person_id, team_person_link.team_id AS team_id, game_person_link.game_id AS game_id, (SELECT COUNT( * ) FROM goals WHERE goals.game_person_id = game_person_link.id) AS Goals FROM game_person_link LEFT JOIN team_person_link ON game_person_link.team_person_id = team_person_link.id LEFT JOIN game ON game_person_link.game_id = game.id WHERE game.home_team_id = $teamID OR game.gone_team_id = $teamID) AS allGoals LEFT JOIN team ON team.id = team_id LEFT JOIN org ON org.id = team.org_id GROUP BY game_id, team_id;";
+    $result  = $this->getSQL($query);
+    
+    while ($team = $result->fetch_object()) {
+      $team2 = $result->fetch_object();
+      if($team->team_id === $teamID){
+        if($team->teamGoals > $team2->teamGoals){
+          $wins++;
+        }
+      }else{
+        if($team2->teamGoals > $team->teamGoals){
+          $wins++;
+        }
+      }
+    }
+    return $wins;
+  }
+
+  public function getPlayerGoals($team_link_id){
+    $goalsQuery = "SELECT SUM( Goals ) AS goals, SUM( totalGoals ) AS total, SUM( Straff ) AS straff FROM ( SELECT game_person_link.id AS game_person_id, team_person_link.person_id AS person_id, game_person_link.game_id AS game_id, ( SELECT COUNT( * ) FROM goals WHERE goals.game_person_id = game_person_link.id AND goals.type =1 ) AS Goals, ( SELECT COUNT( * ) FROM goals WHERE goals.game_person_id = game_person_link.id ) AS totalGoals, ( SELECT COUNT( * ) FROM goals WHERE goals.game_person_id = game_person_link.id AND goals.type =2 ) AS Straff FROM game_person_link LEFT JOIN team_person_link ON game_person_link.team_person_id = team_person_link.id LEFT JOIN game ON game_person_link.game_id = game.id WHERE team_person_link.id =1 ) AS allGoals LEFT JOIN person ON person.id = person_id GROUP BY person_id ORDER BY total DESC";
+    $goalsResult = $this->getSQL($goalsQuery);
+
+    return $goalsResult->fetch_object();
+  }
+
   public function getGoalLeague($season){
     /* season: Integer of what season by its id
     * returns 2D array which is sorted by score, goal difference, matches
@@ -152,7 +202,7 @@ as team_person WHERE team_person_leave=NULL;";
     $people = array();
 
     $goals = "SELECT person_id, person.fname AS first_name, person.sname AS sur_name, SUM( Goals ) AS goals, SUM(totalGoals) as total, SUM(Straff) as straff FROM (SELECT game_person_link.id AS game_person_id, team_person_link.person_id AS person_id, game_person_link.game_id AS game_id, (SELECT COUNT( * ) FROM goals WHERE goals.game_person_id = game_person_link.id AND goals.type =1) AS Goals, (SELECT COUNT( * ) FROM goals WHERE goals.game_person_id = game_person_link.id) AS totalGoals, (SELECT COUNT( * ) FROM goals WHERE goals.game_person_id = game_person_link.id AND goals.type =2) AS Straff FROM game_person_link LEFT JOIN team_person_link ON game_person_link.team_person_id = team_person_link.id LEFT JOIN game ON game_person_link.game_id = game.id WHERE game.season_id = $season) AS allGoals LEFT JOIN person ON person.id = person_id GROUP BY person_id ORDER BY total DESC ";
-    $goalsResult  = $this->db->getSQL($goals);
+    $goalsResult  = $this->getSQL($goals);
 
     while ($person = $goalsResult->fetch_object()) {
       array_push($people, array('first_name' => $person->first_name, 'sur_name' => $person->sur_name,'total' => $person->total, 'goals' => $person->goals,'straff' => $person->penalty));
