@@ -1,31 +1,38 @@
 <?php
+require_once('seasongen.php');
+
 class Scheduler{
   /**
   * This class is supposed to take an array of teams, send the teams to SeasonGen and then put dates
   * on the returning matches
   **/
 
+  private $seasonID;
   private $teams;
   private $matchOverride;
   private $allowedDays;
   private $windowOffset;
   private $startWindow;
   private $matchMax;
+  private $matchTime;
+  private $seasonStart;
   private $matches = array();
-  function _construct($teams, $allowedDays, $matchOverride, $times, $matchMax){
+  function __construct($teams, $allowedDays, $matchOverride, $times, $matchMax, $matchTime, $seasonStart, $seasonID){
     /**
     * teams:          an array of ints that represent the teams that are to play
     * allowedDays:    what days the matches are allowed to be played on (default all)
     * matchOverride:  true or false depending on if the admin wants multiple matches to be played at once
     * times:          an array consisting of two unixTime values the first one being the opening of the time window and the second one being the closing of the time window
     * matchMax:       the max amount of matches allowed to be played in one day
+    * matchTime:      standard length of a match
+    * seasonStart:    day when season starts
     **/
 
     //Checks wether the teams are correctly formated ints
     if(isset($teams)){
       foreach ($teams as $key => $value) {
         if(!(is_numeric($value) && !($value % 1 == 0) && !($value > 0))){
-          throw new Exeption("first argument was not set correctly, expected an array of ints");
+          throw new Exception("first argument was not set correctly, expected an array of ints");
         }
         else{
             array_push($this->teams, $value);
@@ -33,7 +40,7 @@ class Scheduler{
       }
     }
     else{
-      throw new Exeption("first argument was not set correctly, expected an array of ints");
+      throw new Exception("first argument was not set correctly, expected an array of ints");
     }
 
 
@@ -64,7 +71,7 @@ class Scheduler{
             array_push($this->allowedDays, $value-1);
           }
           else{
-            throw new Exeption($value. " is not a valid entry as a Day");
+            throw new Exception($value. " is not a valid entry as a Day");
           }
 
         }
@@ -90,7 +97,7 @@ class Scheduler{
     }
     else{
       $this->startWindow = $times[0];
-      $this->windowOffset = $times[0] - $times[1];
+      $this->windowOffset = $times[1] - $times[0];
     }
 
 
@@ -99,15 +106,107 @@ class Scheduler{
     if(is_numeric($matchMax) && $matchMax%1 == 0 && $matchMax > 0){
         $this->matchMax = $matchMax;
     }
+
+    if(is_numeric($matchTime) && $matchTime%1 == 0 && $matchTime > 0){
+        $this->matchTime = $matchTime;
+    }
+
+
+    if(is_numeric($seasonID)){
+        $this->seasonID = $seasonID;
+    }
+
+    $this->seasonStart = $seasonStart;
   }
+
   public function generate(){
     /**
     *This is where the matches additional info is generated compared to SeasonGen();
     **/
-    
+    $generator = new SeasonGen($this->teams);
+    $generator->makeRobin();
+
+    $curDate = date("Y-n-j", strtotime($this->seasonStart));
+    $curTime = date("H:i:s", strtotime($this->startWindow));
+    $matchesPerTime;
+    $curMatch;
+    $totalMatch;
+
+    if($this->matchOverride){
+      $matchesPerTime = round((($this->windowOffset / 60) / $this->matchTime));
+      $curMatch = 0;
+    }
+
+    while(is_numeric($nextMatch = $generator->getNextMatch())){
+      if($this->matchOverride){
+        if($totalMatch < $this->matchMax){
+          if($curMatch < $matchesPerTime){
+
+          }else{
+            if(strtotime($curTime) <= strtotime($this->startWindow + $this->windowOffset)){
+              $curTime += $this->matchTime;
+            }else{
+              $curDate = nextAllowdDate($curDate);
+              $curTime = date("H:i:s", strtotime($this->startWindow));
+            }
+          }
+        }
+      }else{
+        if(strtotime($curTime) <= strtotime($this->startWindow + $this->windowOffset)){
+          $curTime += $this->matchTime;
+        }else{
+          $curDate = nextAllowdDate($curDate);
+          $curTime = date("H:i:s", strtotime($this->startWindow));
+        }
+        $fulldate = date("Y-n-j H:i:s", strtotime($curDate) + strtotime($curTime));
+        $query = "INSERT INTO game(start_time, home_team_id, gone_team_id, status_id, arena_id, season_id) VALUES ($fulldate, $nextMatch[0], $nextMatch[1], 5, 1, $this->seasonID)";
+        echo $query . "<br>";
+      }
+    }
   }
 
+  private function nextAllowdDate($curDate){
+    $day = date("N", strtotime($curDate));
+    $nextDay;
+    $loop = false;
+    
+    if($day == 7){
+      $nextDay = 1;
+    }
+    
+    while (!$loop) {
+      foreach ($this->allowedDays as $newDay) {
+        if($newDay == $nextDay){
+          switch ($newDay) {
+            case 1:
+              return date("Y-n-j", strtotime("next Monday", $curDate));
+              break;
+            case 2:
+              return date("Y-n-j", strtotime("next Tuesday", $curDate));
+              break;
+            case 3:
+              return date("Y-n-j", strtotime("next Wednesday", $curDate));
+              break;
+            case 4:
+              return date("Y-n-j", strtotime("next Thursday", $curDate));
+              break;
+            case 5:
+              return date("Y-n-j", strtotime("next Friday", $curDate));
+              break;
+            case 6:
+              return date("Y-n-j", strtotime("next Saturday", $curDate));
+              break;
+            case 7:
+              return date("Y-n-j", strtotime("next Sunday", $curDate));
+              break;
+          }
+        }
+      }
+      if($nextDay == $day){
+        $loop = true;
+      }
+      $nextDay++;
+    }
+  }
 }
-
-
 ?>

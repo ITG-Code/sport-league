@@ -65,8 +65,6 @@ class SeasonGen{
     else{
       return $this->matches[$this->matchIndex-1];
     }
-
-
   }
 }
 
