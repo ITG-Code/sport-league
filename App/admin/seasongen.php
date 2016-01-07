@@ -10,6 +10,7 @@ class SeasonGen{
   private $teamScheduleOrder = array();
   private $matchIndex = 0;
   private $matches;
+  private $amount = 0;
 
   //argument should be an array of team_season_link IDs
   function __construct($t){
@@ -38,7 +39,6 @@ class SeasonGen{
     for($i = 0; $i < count($a);$i++){
       if($a[$i][0] == 0 || $a[$i][1] == 0){
         array_splice($a, $i);
-
       }
     }
     return $a;
@@ -47,7 +47,7 @@ class SeasonGen{
     $retval = array();
     for($j = 0; $j < count($this->teams)-1;$j++){
       for ($i=0; $i < count($this->teams)/2; $i++) {
-        echo $this->teams[$i]." ". $this->teams[count($this->teams)-1-$i]."<br>\n";
+        //echo $this->teams[$i]." ". $this->teams[count($this->teams)-1-$i]."<br>\n";
         array_push($retval, array($this->teams[$i], $this->teams[count($this->teams)-1-$i]));
       }
 
@@ -59,7 +59,7 @@ class SeasonGen{
   }
   public function getNextMatch(){
     $this->matchIndex++;
-    if($this->matchIndex <= count($this->teams)){
+    if($this->matchIndex > count($this->matches)){
       return false;
     }
     else{
