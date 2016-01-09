@@ -1,21 +1,7 @@
-﻿<?php
+<?php
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
-include_once('database/dbSetup.php');
-include_once('database/select.php');
-include_once('helper.php');
-
-
-
-if(isset($_POST['login'])){
-  login();
-}
-if(isset($_POST['logout'])){
-  logout();
-}
-
-
-
+include_once ('helper.php');
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -43,44 +29,54 @@ if(isset($_POST['logout'])){
 <body>
   <div class="container-fluid">
     <div class="jumbotron">
-      <h1>Sport-League</h1>
+      <h1>Sport-League Admin Page</h1>
       <p>A league of sports</p>
     </div>
 
+    <?php
+    if(isset($_SESSION['loginID'])){
+      include_once("includes/menu.php");
+    }else{
+      ?>
+      <div class="row">
+        <div class="col-md-4"></div>
+        <form class="form-horizontal well col-md-4" action="login.php" method="post">
+          <fieldset>
+            <legend>Admin Login</legend>
+            <div class="form-group">
+              <label for="loginEmail" class="col-md-2 control-label">Email</label>
+              <div class="col-md-10">
+                <input type="email" name="loginEmail" class="form-control" placeholder="Email"required="required"/>
+              </div>
 
-    <!-- Content of the site -->
-				<?php
+            </div>
+            <div class="form-group">
+              <label for="loginPassword" class="col-md-2 control-label">Password</label>
+              <div class="col-md-10">
+                <input type="password" name="loginPassword" class="form-control" placeholder="Password" required="required"/>
+              </div>
 
-				if(isset($_REQUEST['page'])){
-          if($_REQUEST['page'] == "login.php"){
-            require_once('includes/login.php');
-          }
-          else{
-            require_once ('includes/menu.php');
-            require_once ($_REQUEST['page']);
-          }
+            </div>
 
-				}
-        else{
-          require_once ('includes/menu.php');
-          require_once ('includes/teamtable.php');
-        }
-				?>
-        <!-- Score table -->
+            <input type="submit" value="Login" class="btn btn-primary"/>
+          </fieldset>
+        </form>
+        <div class="col-md-4"></div>
+      </div>
+      <?php
+    }
+
+
+    ?>
+
+
 
     <footer class="row">
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
       <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/0.3.0/js/material.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/0.3.0/js/ripples.min.js"></script>
-      <?php
-        echo "Process time: " . (microtime(true) - $_SERVER["REQUEST_TIME_FLOAT"]);
-      ?>
       <p class="col-lg-4">Copyright &copy; Hannes Kindströmmer & Rickardh Forslund</p>
-      <?php
-      echo "<br>";
-      echo "Current page: " . CURR_URL;
-      ?>
     </footer>
   </div>
 

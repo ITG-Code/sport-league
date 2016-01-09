@@ -1,7 +1,8 @@
-<?php
+﻿<?php
 require_once('seasongen.php');
+require_once('database/dbSetup.php');
 
-class Scheduler{
+class Scheduler extends dbSetup{
   /**
   * This class is supposed to take an array of teams, send the teams to SeasonGen and then put dates
   * on the returning matches
@@ -27,7 +28,12 @@ class Scheduler{
     * matchTime:      standard length of a match
     * seasonStart:    day when season starts
     **/
-
+	try{
+         $this->db = new mysqli('localhost', 'root', 'rickfo97', 'sportleague');
+      }
+      catch(Exeception $e){
+         echo 'Caught exception: ', $e->getMessage(), "\n";
+      }
     //Checks wether the teams are correctly formated ints
     if(isset($teams)){
       foreach ($teams as $key => $value) {
@@ -61,14 +67,14 @@ class Scheduler{
         if(!is_numeric($dayArray[$dk])){
           foreach ($strDays as $sk => $sv) {
             if(strtolower($sv) == strtolower($dv) || strtolower($sv) == strtolower(substr($dv, 0, 3))){
-              array_push($this->allowedDays, $sk);
+              array_push($this->allowedDays, $sv);
             }
           }
         }
         else{
             //This is where you end up if the $allowedDays[$dk] is numeric
           if(is_numeric($dv) && ($dv % 1 == 0) && ($dv > 0) && ($dv >= 1 && $dv <= 7)){
-            array_push($this->allowedDays, $dv-1);
+            array_push($this->allowedDays, $dv);
           }
           else{
             throw new Exception($dv . " is not a valid entry as a Day");
@@ -80,7 +86,7 @@ class Scheduler{
     }
     //This is where you end up if the $allowedDays are not set
     else{
-       $this->allowedDays = array(0,1,2,3,4,5,6);
+       $this->allowedDays = array(1,2,3,4,5,6,7);
     }
 
     //Checks if the matchOverride is a boolean, if not it outputs an error
@@ -138,9 +144,10 @@ class Scheduler{
     //Om matcher får pågå samtidigt så fixar den variablerna som är speciellt
     if($this->matchOverride){
       $matchesPerTime = round((($this->windowOffset / 60) / $this->matchTime));
-      $totalMatch = 0;  
+      $totalMatch = 0;
       $curMatch = 0;
     }
+    $stmt = $this->db->prepare("INSERT INTO game(start_time, home_team_id, gone_team_id, status_id, arena_id, season_id) VALUES (?, ?, ?, 5, 1, ?)");
     //$generator->getNextMatch() ger nästa par id för match om man inte har gått igenom allt då den returnerar false
     while(is_array($nextMatch = $generator->getNextMatch())){
       if($this->matchOverride){
@@ -150,7 +157,8 @@ class Scheduler{
           if($curMatch <= $matchesPerTime){
             //Skriver om datum och tid till samma variable
             $fulldate = $curDate . ' ' . $curTime;
-            $query = "INSERT INTO game(start_time, home_team_id, gone_team_id, status_id, arena_id, season_id) VALUES ($fulldate, $nextMatch[0], $nextMatch[1], 5, 1, $this->seasonID)";
+            $stmt->bind_param("siii", $fulldate, $nextMatch[0], $nextMatch[1], $this->seasonID);
+            $stmt->execute();
             $curMatch++;
             $totalMatch++;
           }else{
@@ -162,7 +170,8 @@ class Scheduler{
 
               //Skriver om datum och tid till samma variable
               $fulldate = $curDate . ' ' . $curTime;
-              $query = "INSERT INTO game(start_time, home_team_id, gone_team_id, status_id, arena_id, season_id) VALUES ($fulldate, $nextMatch[0], $nextMatch[1], 5, 1, $this->seasonID)";
+              $stmt->bind_param("siii", $fulldate, $nextMatch[0], $nextMatch[1], $this->seasonID);
+              $stmt->execute();
               $curMatch++;
               $totalMatch++;
             }else{
@@ -175,7 +184,8 @@ class Scheduler{
 
               //Skriver om datum och tid till samma variable
               $fulldate = $curDate . ' ' . $curTime;
-              $query = "INSERT INTO game(start_time, home_team_id, gone_team_id, status_id, arena_id, season_id) VALUES ($fulldate, $nextMatch[0], $nextMatch[1], 5, 1, $this->seasonID)";
+              $stmt->bind_param("siii", $fulldate, $nextMatch[0], $nextMatch[1], $this->seasonID);
+              $stmt->execute();
               $curMatch++;
               $totalMatch++;
             }
@@ -190,7 +200,8 @@ class Scheduler{
 
           //Skriver om datum och tid till samma variable
           $fulldate = $curDate . ' ' . $curTime;
-          $query = "INSERT INTO game(start_time, home_team_id, gone_team_id, status_id, arena_id, season_id) VALUES ($fulldate, $nextMatch[0], $nextMatch[1], 5, 1, $this->seasonID)";
+          $stmt->bind_param("siii", $fulldate, $nextMatch[0], $nextMatch[1], $this->seasonID);
+	  $stmt->execute();
           $curMatch++;
           $totalMatch++;
         }
@@ -207,25 +218,26 @@ class Scheduler{
         }
 
         //Skriver om datum och tid till samma variable
-        $fulldate = $curDate . ' ' . $curTime;
-        $query = "INSERT INTO game(start_time, home_team_id, gone_team_id, status_id, arena_id, season_id) VALUES ($fulldate, $nextMatch[0], $nextMatch[1], 5, 1, $this->seasonID)";
+        $fulldate = $curDate . ' ' . $curTime;        
+        $stmt->bind_param("siii", $fulldate, $nextMatch[0], $nextMatch[1], $this->seasonID);
+        $stmt->execute();
       }
     }
+    $stmt->close();
   }
 
   private function nextAllowdDate($curDate){
     //Tar vilken veckodag det är in i två variabler
     $day = date("N", strtotime($curDate));
-    $nextDay =  date("N", strtotime($curDate));
+    $nextDay = date("N", strtotime($curDate));
     //Om den har gått igenom alla dagar
     $loop = false;
-    
+    $nextDay++;
     //Går tillbaka till första dagen i veckan om det är slutet
     if($day == 7){
       $nextDay = 1;
     }
-    
-    while (!$loop) {
+    while (true) {
       foreach ($this->allowedDays as $newDay) {
         //Om nästa dag är en man får spela på retunerar den nästa datum
         if($newDay == $nextDay){
@@ -256,9 +268,9 @@ class Scheduler{
       }
       //Kollar om man har loopat runt annars går man till nästa dag
       if($nextDay == $day){
-        $loop = true;
+        break;
       }
-      if($newDay == 7){
+      if($nextDay >= 7){
         $nextDay = 1;
       }else{
         $nextDay++;

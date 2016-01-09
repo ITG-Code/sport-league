@@ -1,21 +1,41 @@
 <?php
-function array_orderby()
-//Credits "jimpoz at jimpoz dot com" @ http://php.net/manual/en/function.array-multisort.php
-{
-  $args = func_get_args();
-  $data = array_shift($args);
-  foreach ($args as $n => $field) {
-      if (is_string($field)) {
-          $tmp = array();
-          foreach ($data as $key => $row)
-              $tmp[$key] = $row[$field];
-          $args[$n] = $tmp;
-          }
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+DEFINE('CURR_URL', "//{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}");
+DEFINE('BASE_URL', 'http://rickardhforslund.se/sportleague/');
+
+
+function ifLoggedIn(){
+  if(isset($_SESSION['loginID'])){
+    return true;
   }
-  $args[] = &$data;
-  call_user_func_array('array_multisort', $args);
-  return array_pop($args);
+  else{
+    return false;
+  }
 }
+function login(){
+  session_start();
+  $s = new Select();
+  if(isset($_POST['loginPassword']) && isset($_POST['loginEmail'])){
 
+    if($s->login($_POST['loginEmail'], $_POST['loginPassword'])){
+      $_SESSION['loginID'] = $_POST['loginEmail'];
 
+    }else{
+      session_unset();
+      session_destroy();
+      header("Location:index.php?page=login.php");
+      exit();
+    }
+  }else{
+    session_unset();
+    session_destroy();
+  }
+  header("Location:");
+}
+  function logout(){
+    session_unset();
+    session_destroy();
+      header("Location:index.php");
+  }
  ?>
