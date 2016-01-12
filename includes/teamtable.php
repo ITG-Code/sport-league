@@ -3,24 +3,27 @@
 
 	$tempSel = new Select();
 	$teams = $tempSel->getTeamTable(1);
-	echo '</table>';
+	echo "<div class='well row'>";
+	echo "<h2>Scoreboard</h2>";
+	echo '</table>'."\n";
 
-	echo '<table class="table table-striped">';
-	echo '<tr>
-	<th>Team name</th>
-	<th>Points</th>
-	<th>Goals</th>
-	<th>Matches</th>
-  </tr>';
+	echo '<table class="table table-striped">'."\n";
+	echo "<tr>\n
+	<th>Team name</th>\n
+	<th>Points</th>\n
+	<th>Goals</th>\n
+	<th>Matches</th>\n
+  </tr>\n";
 	foreach ($teams as $team) {
-		echo '<tr>';
-			echo '<td>' . $team['name'] . "</td>";
-			echo '<td>' . $team['points'] . "</td>";
-			echo '<td>' . $team['goals'] . "</td>";
-			echo '<td>' . $team['matches'] . "</td>";
+		echo "<tr>\n";
+			echo '<td>' . $team['name'] . "</td>\n";
+			echo '<td>' . $team['points'] . "</td>\n";
+			echo '<td>' . $team['goals'] . "</td>\n";
+			echo '<td>' . $team['matches'] . "</td>\n";
 		echo '</tr>';
 	}
-	echo '</table>';
+	echo "</table>\n";
+	echo "</div>";
 
 
 ?>

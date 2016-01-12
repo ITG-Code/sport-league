@@ -1,19 +1,21 @@
 ﻿<?php
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
+//ini_set('display_errors', 1);
+//error_reporting(E_ALL);
 include_once('database/dbSetup.php');
 include_once('database/select.php');
 include_once('helper.php');
-
-
-
+require_once('objects/player.php');
+require_once('objects/match.php');
+require_once('database/dbSetup.php');
+require_once('objects/player.php');
+require_once('objects/match.php');
+require_once('objects/team.php');
 if(isset($_POST['login'])){
   login();
 }
-if(isset($_POST['logout'])){
+if(isset($_REQUEST['logout'])){
   logout();
 }
-
 
 
 ?>
@@ -26,6 +28,7 @@ if(isset($_POST['logout'])){
   <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
   <title>Sport-League</title>
 
+  <link rel="stylesheet" href="index.css">
   <!-- Bootstrap -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
   <!-- Material Design -->
@@ -49,24 +52,31 @@ if(isset($_POST['logout'])){
 
 
     <!-- Content of the site -->
-				<?php
+    <?php
 
-				if(isset($_REQUEST['page'])){
-          if($_REQUEST['page'] == "login.php"){
-            require_once('includes/login.php');
-          }
-          else{
-            require_once ('includes/menu.php');
-            require_once ($_REQUEST['page']);
-          }
+    if(isset($_REQUEST['page'])){
+      if($_REQUEST['page'] == "login.php"){
+        require_once('includes/login.php');
+      }
+      elseif($_REQUEST['page'] == "admin.php" && isLoggedIn()){
+        require_once ('admin.php');
+      }
+      elseif($_REQUEST['page'] == "matchhistory.php"){
+        require_once ('includes/menu.php');
+        require_once("includes/matchhistory.php");
+      }
+      else{
+        require_once ('includes/menu.php');
+        require_once ($_REQUEST['page']);
+      }
 
-				}
-        else{
-          require_once ('includes/menu.php');
-          require_once ('includes/teamtable.php');
-        }
-				?>
-        <!-- Score table -->
+    }
+    else{
+      require_once ('includes/menu.php');
+      require_once ('includes/teamtable.php');
+    }
+    ?>
+    <!-- Score table -->
 
     <footer class="row">
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
@@ -74,15 +84,14 @@ if(isset($_POST['logout'])){
       <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/0.3.0/js/material.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/0.3.0/js/ripples.min.js"></script>
       <?php
-        echo "Process time: " . (microtime(true) - $_SERVER["REQUEST_TIME_FLOAT"]);
+        //echo "Process time: " . (microtime(true) - $_SERVER["REQUEST_TIME_FLOAT"]);
       ?>
       <p class="col-lg-4">Copyright &copy; Hannes Kindströmmer & Rickardh Forslund</p>
       <?php
-      echo "<br>";
-      echo "Current page: " . CURR_URL;
+    //  echo "<br>";
+    //  echo "Current page: " . CURR_URL;
       ?>
     </footer>
   </div>
-
 </body>
 </html>

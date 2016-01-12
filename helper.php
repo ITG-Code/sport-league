@@ -1,11 +1,9 @@
 <?php
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
 DEFINE('CURR_URL', "//{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}");
 DEFINE('BASE_URL', 'http://rickardhforslund.se/sportleague/');
 
 
-function ifLoggedIn(){
+function isLoggedIn(){
   if(isset($_SESSION['loginID'])){
     return true;
   }

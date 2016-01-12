@@ -25,12 +25,12 @@
         <li>Name: <?php echo $player->getFName() . " " . $player->getSName();?></li>
         <!-- make: Get organization per ID since last club contains IDs-->
         <li>Original Club: <?php echo $db->getFullTeamName($player->getcurTeam()); ?></li>
-        <li>Current Club: Uppsala Birdsnest</li>
-        <li>Nationality: United Birds of Sweden</li>
+        <!--<li>Current Club: Uppsala Birdsnest</li>
+        <li>Nationality: United Birds of Sweden</li> -->
         <li>Shirt nr: <?php echo $player->getShirtNr()[0]; ?></li>
         <li>Weight: <?php echo $player->getWeight(); ?></li>
         <li>Height: <?php echo $player->getHeight(); ?></li>
-        <li>Birthday: 1997-2-1</li>
+        <!-- <li>Birthday: 1997-2-1</li> -->
         <li>Position: <?php echo $player->getRoleName(); ?></li>
       </ul>
     </div>
@@ -48,18 +48,18 @@
           ?><li>Goals/Finishes ratio: <?php echo $player->getGoals() / $player->getFinishes() * 100;?></li><?php
         }
         ?>
-        <li>Total passes: 7000</li>
+      <!--  <li>Total passes: 7000</li>
         <li>Complete passes: 6000</li>
         <li>Interuped passes: 500</li>
         <li>Current blood pressure: 100</li>
-        <li>Deseases: Fever, Tuberculosis, Hyponeurikostiskadiafragmakontravibrationer</li>
+        <li>Deseases: Fever, Tuberculosis, Hyponeurikostiskadiafragmakontravibrationer</li>-->
       </ul>
     </div>
 </div>
   </div>
 
 <!-- Player stats -->
-<div class="row">
+<!--<div class="row">
   <div class="col-md-12 well">
     <h3>Player Matches</h3>
     <table class="table">
@@ -166,4 +166,4 @@
       </tr>
     </table>
   </div>
-</div>
+</div>-->

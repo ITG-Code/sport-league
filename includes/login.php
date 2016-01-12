@@ -1,6 +1,6 @@
 <div class="row">
   <div class="col-md-4"></div>
-  <form class="form-horizontal well col-md-4" action="index.php" method="post">
+  <form class="form-horizontal well col-md-4" action="?page=admin.php" method="post">
     <fieldset>
       <legend>Admin Login</legend>
       <div class="form-group">
